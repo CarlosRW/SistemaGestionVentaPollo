@@ -11,6 +11,14 @@ GRANT ALL PRIVILEGES ON ventapollo.* TO 'usuario_pollo'@'localhost';
 -- 3. Refrescar los privilegios para que los cambios apliquen
 FLUSH PRIVILEGES;
 
+-- Tabla de usuarios para login y registro
+CREATE TABLE IF NOT EXISTS usuario (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    correo VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(100) NOT NULL
+);
+
 -- Tabla de productos
 CREATE TABLE IF NOT EXISTS producto (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
