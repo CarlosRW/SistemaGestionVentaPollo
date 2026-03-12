@@ -1,16 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package com.ventapollo;
 
-/**
- *
- * @author Jose Antonio
- */
 public class GestionProductosUI extends javax.swing.JFrame {
     
-    com.ventapollo.service.ProductoService servicio = new com.ventapollo.service.ProductoService();
+    //com.ventapollo.service.ProductoService servicio = new com.ventapollo.service.ProductoService();
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GestionProductosUI.class.getName());
 
     /**

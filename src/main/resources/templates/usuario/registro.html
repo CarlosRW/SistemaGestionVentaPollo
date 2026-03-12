@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Registro</title>
+    <meta charset="UTF-8">
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background: linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)),
+                        url('https://images.unsplash.com/photo-1625604087024-7fb428fc4626?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .contenedor{
+            width: 360px;
+            padding: 30px;
+            border-radius: 12px;
+            background: rgba(255,255,255,.12);
+            backdrop-filter: blur(6px);
+            color: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,.3);
+        }
+
+        input{
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 18px 0;
+            border: none;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        button, .btn-link{
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 10px;
+            box-sizing: border-box;
+        }
+
+        button{
+            background-color: #c97b2a;
+            color: white;
+        }
+
+        .btn-link{
+            background-color: #198754;
+            color: white;
+        }
+
+        .error{
+            color: #ffb3b3;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        label{
+            display:block;
+            margin-bottom:6px;
+        }
+
+
+
+        .logo-bb{
+            margin-bottom: 25px;
+            color: #17a34a;
+            line-height: 1;
+        }
+
+        .fila-superior,
+        .fila-inferior{
+            display: flex;
+            align-items: center;
+        }
+
+        .fila-superior{
+            margin-left: 20px;
+        }
+
+        .fila-inferior{
+            margin-left: 85px;
+            margin-top: -4px;
+        }
+
+        .caja{
+            position: relative;
+            background-color: #00a63c;
+            color: white;
+            font-size: 34px;
+            padding: 10px 14px;
+            display: inline-block;
+            min-width: 58px;
+            text-align: center;
+            box-shadow: 0 0 8px rgba(0,0,0,.25);
+        }
+
+        .texto{
+            font-size: 34px;
+            margin-left: 6px;
+            color: #17a34a;
+        }
+
+        .numero{
+            position: absolute;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            top: 4px;
+            right: 5px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="contenedor">
+
+
+    <div class="logo-bb">
+        <div class="fila-superior">
+            <span class="caja">
+                Po
+                <span class="numero">84</span>
+            </span>
+            <span class="texto">llos</span>
+        </div>
+
+        <div class="fila-inferior">
+            <span class="caja">
+                He
+                <span class="numero">2</span>
+            </span>
+            <span class="texto">rmanos</span>
+        </div>
+    </div>
+
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+
+    <form th:action="@{/usuario/registro}" th:object="${usuario}" method="post">
+
+        <label>Nombre</label>
+        <input type="text" th:field="*{nombre}" required>
+
+        <label>Correo</label>
+        <input type="email" th:field="*{correo}" required>
+
+        <label>Contraseña</label>
+        <input type="password" th:field="*{password}" required>
+
+        <button type="submit">Registrarse</button>
+    </form>
+    <a th:href="@{/usuario/login}" class="btn-link">Volver al login</a>
+</div>
+
+</body>
+</html>

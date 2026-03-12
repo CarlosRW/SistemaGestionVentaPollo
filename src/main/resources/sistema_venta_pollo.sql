@@ -53,3 +53,25 @@ INSERT INTO producto (nombre, descripcion, precio, imagen_url) VALUES
 ('Combo Familiar Alitas', '12 piezas + papas + refresco', 7500.0, 'https://img.freepik.com/vector-premium/alitas-pollo-frito-papas-fritas-ilustracion-estilo-pixel-art_1102-3850.jpg'),
 ('Pollo Entero', 'El clásico pollo frito crujiente', 8900.0, 'https://img.freepik.com/vector-premium/pollo-frito-crujiente-cubo-pixel-art_1102-3832.jpg'),
 ('Pieza Individual', 'Muslo o Pechuga', 1200.0, 'https://img.freepik.com/vector-premium/pierna-pollo-frito-pixel-art_1102-3820.jpg');
+
+UPDATE producto
+SET imagen_url = 'https://images.unsplash.com/photo-1608039755401-742074f0548d'
+WHERE id = 1;
+
+UPDATE producto
+SET imagen_url = 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58'
+WHERE id = 2;
+
+UPDATE producto
+SET imagen_url = 'https://images.unsplash.com/photo-1513639776629-7b61b0ac49cb'
+WHERE id = 3;
+
+UPDATE producto
+SET imagen_url = 'https://images.unsplash.com/photo-1562967914-608f82629710'
+WHERE id = 4;
+
+UPDATE producto SET nombre = 'Combo alitas picantes' WHERE id = 1;
+UPDATE producto SET nombre = 'Combo familiar alitas' WHERE id = 2;
+UPDATE producto SET nombre = 'Pollo entero' WHERE id = 3;
+UPDATE producto SET nombre = 'Pieza individual' WHERE id = 4;
+ o Pechuga', 1200.0, 'https://img.freepik.com/vector-premium/pierna-pollo-frito-pixel-art_1102-3820.jpg');
