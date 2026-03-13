@@ -15,6 +15,6 @@ public class Item extends Producto {
         super.setNombre(producto.getNombre());
         super.setPrecio(producto.getPrecio());
         super.setImagenUrl(producto.getImagenUrl());
-        this.cantidad = 0;
+        this.cantidad = 1; // Cambia de 0 a 1 para que al agregar ya cuente uno
     }
 }

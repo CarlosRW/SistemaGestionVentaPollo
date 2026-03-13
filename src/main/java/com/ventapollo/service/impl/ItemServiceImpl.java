@@ -11,20 +11,21 @@ public class ItemServiceImpl implements ItemService {
     public List<Item> gets() { return listaItems; }
 
     @Override
-    public void save(Item item) {
-        boolean existe = false;
-        for (Item i : listaItems) {
-            if (i.getId().equals(item.getId())) {
-                i.setCantidad(i.getCantidad() + 1);
-                existe = true;
-                break;
-            }
-        }
-        if (!existe) {
-            item.setCantidad(1);
-            listaItems.add(item);
+public void save(Item item) {
+    boolean existe = false;
+    for (Item i : listaItems) {
+        // Si el ID del producto ya está en el carrito, aumentamos la cantidad
+        if (i.getId().equals(item.getId())) {
+            i.setCantidad(i.getCantidad() + 1);
+            existe = true;
+            break;
         }
     }
+    // Si no existía, lo agregamos como nuevo
+    if (!existe) {
+        listaItems.add(item);
+    }
+}
 
     @Override
     public void delete(Item item) {
