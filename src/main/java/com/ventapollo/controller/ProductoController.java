@@ -12,7 +12,7 @@ public class ProductoController {
     @Autowired
     private ProductoDao productoDao;
 
-    @GetMapping({"/", "/menu"})
+    @GetMapping("/menu")
     public String verMenu(Model model) {
         var productos = productoDao.findAll();
         model.addAttribute("productos", productos);

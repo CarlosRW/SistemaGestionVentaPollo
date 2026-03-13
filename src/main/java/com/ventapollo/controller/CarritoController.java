@@ -15,6 +15,7 @@ public class CarritoController {
 
     @Autowired
     private ItemService itemService;
+
     @Autowired
     private ProductoDao productoDao;
 
@@ -22,12 +23,14 @@ public class CarritoController {
     public String inicio(Model model) {
         var items = itemService.gets();
         var carritoTotal = 0.0;
+
         for (Item i : items) {
             carritoTotal += (i.getPrecio() * i.getCantidad());
         }
+
         model.addAttribute("items", items);
         model.addAttribute("carritoTotal", carritoTotal);
-        return "/carrito/listado";
+        return "carrito/listado";
     }
 
     @GetMapping("/carrito/agregar/{id}")
@@ -36,7 +39,7 @@ public class CarritoController {
         if (producto != null) {
             itemService.save(new Item(producto));
         }
-        return "redirect:/"; // Redirige al index o menú principal
+        return "redirect:/menu";
     }
 
     @GetMapping("/carrito/eliminar/{id}")
