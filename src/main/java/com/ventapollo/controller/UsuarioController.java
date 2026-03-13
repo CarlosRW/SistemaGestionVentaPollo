@@ -46,7 +46,7 @@ public class UsuarioController {
         Usuario usuario = usuarioService.autenticar(correo, password);
 
         if (usuario != null) {
-            return "redirect:/carrito/listado";
+            return "redirect:/menu";
         } else {
             model.addAttribute("error", "Correo o contraseña incorrectos");
             return "usuario/login";
