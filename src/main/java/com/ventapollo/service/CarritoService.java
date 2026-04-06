@@ -7,7 +7,7 @@ package com.ventapollo.service;
 
 /**
  *
- * @author carlos
+ * @author Jose Antonio
  */
 public class CarritoService {
 
