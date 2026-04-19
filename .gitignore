@@ -31,3 +31,5 @@ build/
 
 ### VS Code ###
 .vscode/
+src/main/resources/firebase/sistema-ventapollo-firebase-adminsdk-fbsvc-405a83d146.json
+src/main/resources/application.properties
