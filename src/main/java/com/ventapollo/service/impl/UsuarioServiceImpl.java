@@ -1,16 +1,17 @@
 package com.ventapollo.service.impl;
 
-import com.ventapollo.dao.UsuarioDao;
-import com.ventapollo.domain.Usuario;
-import com.ventapollo.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.ventapollo.domain.Usuario;
+import com.ventapollo.repository.UsuarioRepository;
+import com.ventapollo.service.UsuarioService;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 
     @Autowired
-    private UsuarioDao usuarioDao;
+    private UsuarioRepository usuarioDao;
 
     @Override
     public void guardar(Usuario usuario) {

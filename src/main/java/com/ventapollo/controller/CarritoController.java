@@ -1,14 +1,15 @@
 package com.ventapollo.controller;
 
-import com.ventapollo.domain.Item;
-import com.ventapollo.domain.Producto;
-import com.ventapollo.service.ItemService;
-import com.ventapollo.dao.ProductoDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import com.ventapollo.domain.Item;
+import com.ventapollo.domain.Producto;
+import com.ventapollo.repository.ProductoRepository;
+import com.ventapollo.service.ItemService;
 
 @Controller
 public class CarritoController {
@@ -17,7 +18,7 @@ public class CarritoController {
     private ItemService itemService;
     
     @Autowired
-    private ProductoDao productoDao;
+    private ProductoRepository productoRepository;
 
     @GetMapping("/carrito/listado")
     public String inicio(Model model) {
@@ -33,7 +34,7 @@ public class CarritoController {
 
     @GetMapping("/carrito/agregar/{id}")
     public String agregarItem(@PathVariable("id") Long id) {
-        Producto producto = productoDao.findById(id).orElse(null);
+        Producto producto = productoRepository.findById(id).orElse(null);
         if (producto != null) {
             itemService.save(new Item(producto));
         }
