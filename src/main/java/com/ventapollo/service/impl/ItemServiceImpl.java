@@ -7,25 +7,28 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ItemServiceImpl implements ItemService {
-    @Override
-    public List<Item> gets() { return listaItems; }
 
     @Override
-public void save(Item item) {
-    boolean existe = false;
-    for (Item i : listaItems) {
-        // Si el ID del producto ya está en el carrito, aumentamos la cantidad
-        if (i.getId().equals(item.getId())) {
-            i.setCantidad(i.getCantidad() + 1);
-            existe = true;
-            break;
+    public List<Item> gets() {
+        return listaItems;
+    }
+
+    @Override
+    public void save(Item item) {
+        boolean existe = false;
+        for (Item i : listaItems) {
+            
+            if (i.getId().equals(item.getId())) {
+                i.setCantidad(i.getCantidad() + 1);
+                existe = true;
+                break;
+            }
+        }
+        
+        if (!existe) {
+            listaItems.add(item);
         }
     }
-    // Si no existía, lo agregamos como nuevo
-    if (!existe) {
-        listaItems.add(item);
-    }
-}
 
     @Override
     public void delete(Item item) {
@@ -35,7 +38,9 @@ public void save(Item item) {
     @Override
     public Item get(Item item) {
         for (Item i : listaItems) {
-            if (i.getId().equals(item.getId())) return i;
+            if (i.getId().equals(item.getId())) {
+                return i;
+            }
         }
         return null;
     }
@@ -48,5 +53,11 @@ public void save(Item item) {
                 break;
             }
         }
+    }
+
+    
+    @Override
+    public void checkout() {
+        listaItems.clear();
     }
 }

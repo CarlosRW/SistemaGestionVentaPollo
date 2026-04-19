@@ -38,13 +38,47 @@ public class CarritoController {
         if (producto != null) {
             itemService.save(new Item(producto));
         }
-        // CORRECCIÓN: Ahora te devuelve a tu menú de pollos en lugar de dar error 404
         return "redirect:/producto/listado"; 
     }
 
     @GetMapping("/carrito/eliminar/{id}")
-    public String eliminarItem(Item item) {
+    public String eliminarItem(@PathVariable("id") Long id) {
+        Item item = new Item();
+        item.setId(id);
         itemService.delete(item);
+        return "redirect:/carrito/listado";
+    }
+
+    @GetMapping("/carrito/confirmar")
+    public String confirmar() {
+        itemService.checkout();
+        return "redirect:/producto/listado";
+    }
+
+    
+
+    @GetMapping("/carrito/sumar/{id}")
+    public String sumarItem(@PathVariable("id") Long id) {
+        var items = itemService.gets();
+        for (Item i : items) {
+            if (i.getId().equals(id)) {
+                i.setCantidad(i.getCantidad() + 1);
+                break;
+            }
+        }
+        return "redirect:/carrito/listado";
+    }
+
+    @GetMapping("/carrito/restar/{id}")
+    public String restarItem(@PathVariable("id") Long id) {
+        var items = itemService.gets();
+        for (Item i : items) {
+            
+            if (i.getId().equals(id) && i.getCantidad() > 1) {
+                i.setCantidad(i.getCantidad() - 1);
+                break;
+            }
+        }
         return "redirect:/carrito/listado";
     }
 }

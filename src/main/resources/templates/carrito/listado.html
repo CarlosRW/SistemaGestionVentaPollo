@@ -1,44 +1,112 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>Carrito VentaPollo</title>
+        <title>Mi Pedido | VentaPollo</title>
+        <meta charset="UTF-8">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+        <style>
+            .img-thumbnail-cart { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; }
+            .card-summary { border: none; border-radius: 15px; background-color: #ffffff; }
+            .btn-finalizar { background-color: #198754; color: white; font-weight: bold; border-radius: 10px; padding: 12px; border: none; }
+            .btn-finalizar:hover { background-color: #146c43; color: white; }
+            .bg-custom { background-color: #f8f9fa; }
+            /* Estilo para que los botones de cantidad se vean redondos y limpios */
+            .btn-qty { 
+                width: 32px; 
+                height: 32px; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                border-radius: 50%; 
+                transition: 0.2s;
+            }
+        </style>
     </head>
-    <body class="bg-light">
-        <div class="container mt-5">
-            <h2 class="mb-4">Tu Pedido</h2>
-            <div class="row">
-                <div class="col-md-8">
-                    <table class="table bg-white shadow-sm">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Producto</th>
-                                <th>Precio</th>
-                                <th>Cantidad</th>
-                                <th>Subtotal</th>
-                                <th>Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="item : ${items}">
-                                <td th:text="${item.nombre}"></td>
-                                <td th:text="${'₡' + item.precio}"></td>
-                                <td th:text="${item.cantidad}"></td>
-                                <td th:text="${'₡' + (item.precio * item.cantidad)}"></td>
-                                <td>
-                                    <a th:href="@{/carrito/eliminar/}+${item.id}" class="btn btn-danger btn-sm">Eliminar</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="col-md-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h4>Total</h4>
-                            <h2 style="color: #198754;" th:text="${'₡' + #numbers.formatInteger(carritoTotal, 0, 'COMMA')}"></h2>
-                            <button class="btn btn-custom-green w-100 mt-3">Finalizar Compra</button>
+    <body class="bg-custom">
+        <div class="container py-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold text-dark"><i class="bi bi-bag-check-fill text-success"></i> Detalle de tu Pedido</h2>
+                <a th:href="@{/producto/listado}" class="btn btn-outline-primary shadow-sm">
+                    <i class="bi bi-plus-circle"></i> Agregar más pollito
+                </a>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-sm rounded-4">
+                        <div class="table-responsive p-3">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Imagen</th>
+                                        <th>Producto</th>
+                                        <th class="text-center">Cant.</th>
+                                        <th class="text-end">Subtotal</th>
+                                        <th class="text-center">Quitar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="item : ${items}">
+                                        <td>
+                                            <img th:src="${item.imagenUrl}" class="img-thumbnail-cart shadow-sm" alt="Producto">
+                                        </td>
+                                        <td>
+                                            <div class="fw-bold" th:text="${item.nombre}"></div>
+                                            <small class="text-muted" th:text="${'Unitario: ₡' + item.precio}"></small>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex align-items-center justify-content-center gap-2">
+                                                <a th:href="@{/carrito/restar/}+${item.id}" 
+                                                   class="btn btn-outline-secondary btn-qty shadow-sm text-decoration-none">
+                                                    <i class="bi bi-dash-lg"></i>
+                                                </a>
+
+                                                <span class="badge bg-dark px-3 py-2 fs-6" style="min-width: 45px;" th:text="${item.cantidad}"></span>
+
+                                                <a th:href="@{/carrito/sumar/}+${item.id}" 
+                                                   class="btn btn-outline-secondary btn-qty shadow-sm text-decoration-none">
+                                                    <i class="bi bi-plus-lg"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td class="text-end fw-bold text-primary" th:text="${'₡' + (item.precio * item.cantidad)}"></td>
+                                        <td class="text-center">
+                                            <a th:href="@{/carrito/eliminar/}+${item.id}" class="btn btn-outline-danger btn-sm border-0">
+                                                <i class="bi bi-trash-fill fs-5"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${items == null or items.empty}">
+                                        <td colspan="5" class="text-center py-5 text-muted fs-5">No hay productos en el carrito.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="card card-summary shadow-sm p-4">
+                        <h4 class="fw-bold mb-4 border-bottom pb-2">Resumen</h4>
+                        <div class="d-flex justify-content-between mb-3 text-muted">
+                            <span>Subtotal</span>
+                            <span th:text="${'₡' + #numbers.formatInteger(carritoTotal, 0, 'COMMA')}"></span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3 text-danger">
+                            <span>IVA (13%)</span>
+                            <span th:text="${'₡' + #numbers.formatInteger(carritoTotal * 0.13, 0, 'COMMA')}"></span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-4">
+                            <span class="h5 fw-bold">Total Final</span>
+                            <span class="h4 fw-bold text-success" th:text="${'₡' + #numbers.formatInteger(carritoTotal * 1.13, 0, 'COMMA')}"></span>
+                        </div>
+                        <a th:href="@{/carrito/confirmar}" 
+                           class="btn btn-finalizar w-100 shadow text-center text-white text-decoration-none"
+                           th:classappend="${items == null or items.empty} ? 'disabled' : ''">
+                            <i class="bi bi-check2-circle"></i> CONFIRMAR PEDIDO
+                        </a>
                     </div>
                 </div>
             </div>
