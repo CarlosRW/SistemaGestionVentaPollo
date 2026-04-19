@@ -15,6 +15,7 @@ public class CarritoController {
 
     @Autowired
     private ItemService itemService;
+    
     @Autowired
     private ProductoDao productoDao;
 
@@ -36,7 +37,8 @@ public class CarritoController {
         if (producto != null) {
             itemService.save(new Item(producto));
         }
-        return "redirect:/"; // Redirige al index o menú principal
+        // CORRECCIÓN: Ahora te devuelve a tu menú de pollos en lugar de dar error 404
+        return "redirect:/producto/listado"; 
     }
 
     @GetMapping("/carrito/eliminar/{id}")
