@@ -1,11 +1,9 @@
 package com.ventapollo.service;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.ventapollo.domain.Producto;
 import com.ventapollo.repository.ProductoRepository;
 
@@ -13,37 +11,45 @@ import com.ventapollo.repository.ProductoRepository;
 public class ProductoService {
 
     @Autowired
-    private ProductoRepository productoRepository; 
+    private ProductoRepository productoRepository;
 
-    // Obtener la lista completa desde MySQL
     @Transactional(readOnly = true)
     public List<Producto> obtenerTodos() {
         return productoRepository.findAll();
     }
 
-    // --- PUNTO PA-9: AGREGAR / GUARDAR PRODUCTO ---
-    @Transactional
-    public void agregar(Producto p) {
-        // En JPA, .save() inserta si el ID es nulo o nuevo
-        productoRepository.save(p);
+    @Transactional(readOnly = true)
+    public Producto obtenerPorId(Long id) {
+        return productoRepository.findById(id).orElse(null);
     }
 
-    // Método para eliminar por ID
+    @Transactional
+    public void guardar(Producto producto) {
+        productoRepository.save(producto);
+    }
+
     @Transactional
     public void eliminar(Long id) {
         productoRepository.deleteById(id);
     }
 
-    // --- PUNTO PA-10: ACTUALIZAR PRECIO ---
-    @Transactional
-    public void actualizarPrecio(Long id, double nuevoPrecio) {
-        // Buscamos el producto en la base de datos
-        Producto p = productoRepository.findById(id).orElse(null);
-        
-        if (p != null) {
-            p.setPrecio(nuevoPrecio);
-            // Al hacer save de un objeto que ya tiene ID, JPA hace un UPDATE
-            productoRepository.save(p); 
-        }
+    @Transactional(readOnly = true)
+    public List<Producto> buscarPorNombre(String nombre) {
+        return productoRepository.findByNombreContainingIgnoreCase(nombre);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Producto> buscarPorRangoPrecio(double precioMin, double precioMax) {
+        return productoRepository.findByPrecioBetweenOrderByPrecioAsc(precioMin, precioMax);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Producto> listarOrdenadosPorPrecio() {
+        return productoRepository.listarOrdenadosPorPrecio();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Producto> consultaPrecioSQL(double precioMin, double precioMax) {
+        return productoRepository.consultaPrecioSQL(precioMin, precioMax);
     }
 }
