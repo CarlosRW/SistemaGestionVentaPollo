@@ -5,10 +5,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 
 import com.ventapollo.domain.Item;
 import com.ventapollo.domain.Producto;
+import com.ventapollo.domain.Pedido;
 import com.ventapollo.repository.ProductoRepository;
+import com.ventapollo.repository.PedidoRepository;
 import com.ventapollo.service.ItemService;
 
 @Controller
@@ -19,6 +23,9 @@ public class CarritoController {
     
     @Autowired
     private ProductoRepository productoRepository;
+    
+    @Autowired
+    private PedidoRepository pedidoRepository;
 
     @GetMapping("/carrito/listado")
     public String inicio(Model model) {
@@ -51,11 +58,26 @@ public class CarritoController {
 
     @GetMapping("/carrito/confirmar")
     public String confirmar() {
-        itemService.checkout();
+        var items = itemService.gets();
+        var carritoTotal = 0.0;
+        
+        if (items != null && !items.isEmpty()) {
+            for (Item i : items) {
+                carritoTotal += (i.getPrecio() * i.getCantidad());
+            }
+
+            Pedido pedido = new Pedido();
+            pedido.setTotal(carritoTotal);
+            pedido.setEstado("CONFIRMADO");
+            pedido.setUsuarioId(1L);
+            pedido.setMetodoPagoId(3L);
+            
+            pedidoRepository.save(pedido);
+            itemService.checkout(); 
+        }
+        
         return "redirect:/producto/listado";
     }
-
-    
 
     @GetMapping("/carrito/sumar/{id}")
     public String sumarItem(@PathVariable("id") Long id) {
@@ -73,7 +95,6 @@ public class CarritoController {
     public String restarItem(@PathVariable("id") Long id) {
         var items = itemService.gets();
         for (Item i : items) {
-            
             if (i.getId().equals(id) && i.getCantidad() > 1) {
                 i.setCantidad(i.getCantidad() - 1);
                 break;
