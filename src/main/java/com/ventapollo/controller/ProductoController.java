@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/producto")
@@ -16,8 +18,7 @@ public class ProductoController {
 
     @GetMapping("/listado")
     public String listado(Model model) {
-        var productos = productoService.obtenerTodos();
-        model.addAttribute("productos", productos);
+        model.addAttribute("productos", productoService.obtenerTodos());
         return "producto/listado";
     }
 
@@ -28,8 +29,18 @@ public class ProductoController {
     }
 
     @PostMapping("/guardar")
-    public String guardarProducto(Producto producto) {
-        productoService.guardar(producto);
+    public String guardarProducto(
+            @ModelAttribute Producto producto,
+            @RequestParam(value = "imagenFile", required = false) MultipartFile imagenFile,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            productoService.guardar(producto, imagenFile);
+            redirectAttributes.addFlashAttribute("exito", "Producto guardado correctamente.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Error al guardar el producto: " + e.getMessage());
+        }
         return "redirect:/producto/listado";
     }
 
@@ -41,15 +52,21 @@ public class ProductoController {
     }
 
     @GetMapping("/eliminar/{id}")
-    public String eliminarProducto(@PathVariable("id") Long id) {
-        productoService.eliminar(id);
+    public String eliminarProducto(@PathVariable("id") Long id,
+                                   RedirectAttributes redirectAttributes) {
+        try {
+            productoService.eliminar(id);
+            redirectAttributes.addFlashAttribute("exito", "Producto eliminado.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error",
+                    "No se pudo eliminar: " + e.getMessage());
+        }
         return "redirect:/producto/listado";
     }
 
     @GetMapping("/buscar")
     public String buscarPorNombre(@RequestParam("nombre") String nombre, Model model) {
-        var productos = productoService.buscarPorNombre(nombre);
-        model.addAttribute("productos", productos);
+        model.addAttribute("productos", productoService.buscarPorNombre(nombre));
         return "producto/listado";
     }
 
@@ -57,15 +74,13 @@ public class ProductoController {
     public String buscarPorPrecio(@RequestParam("min") double min,
                                   @RequestParam("max") double max,
                                   Model model) {
-        var productos = productoService.buscarPorRangoPrecio(min, max);
-        model.addAttribute("productos", productos);
+        model.addAttribute("productos", productoService.buscarPorRangoPrecio(min, max));
         return "producto/listado";
     }
 
     @GetMapping("/ordenados")
     public String listarOrdenados(Model model) {
-        var productos = productoService.listarOrdenadosPorPrecio();
-        model.addAttribute("productos", productos);
+        model.addAttribute("productos", productoService.listarOrdenadosPorPrecio());
         return "producto/listado";
     }
 
@@ -73,8 +88,7 @@ public class ProductoController {
     public String consultaSQL(@RequestParam("min") double min,
                               @RequestParam("max") double max,
                               Model model) {
-        var productos = productoService.consultaPrecioSQL(min, max);
-        model.addAttribute("productos", productos);
+        model.addAttribute("productos", productoService.consultaPrecioSQL(min, max));
         return "producto/listado";
     }
 }

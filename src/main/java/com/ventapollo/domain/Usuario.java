@@ -15,4 +15,7 @@ public class Usuario {
     private String nombre;
     private String correo;
     private String password;
+
+    @Column(name = "foto_perfil_url")
+    private String fotoPerfilUrl;
 }

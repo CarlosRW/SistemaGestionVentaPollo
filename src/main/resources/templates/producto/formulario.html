@@ -2,43 +2,194 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8">
-        <title>Formulario Producto</title>
+        <title>Formulario Producto | VentaPollo</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+        <style>
+            body {
+                background-color: #f8f9fa;
+            }
+            .card-form {
+                border: none;
+                border-radius: 16px;
+            }
+            .preview-img {
+                width: 100%;
+                height: 220px;
+                object-fit: cover;
+                border-radius: 12px;
+                border: 2px dashed #dee2e6;
+                background: #f0f0f0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .upload-zone {
+                border: 2px dashed #198754;
+                border-radius: 12px;
+                padding: 20px;
+                text-align: center;
+                cursor: pointer;
+                transition: 0.2s;
+                background: #f8fff9;
+            }
+            .upload-zone:hover {
+                background: #e8f5e9;
+            }
+            #imagenFile {
+                display: none;
+            }
+        </style>
     </head>
-    <body class="bg-light">
+    <body>
 
-        <div class="container mt-5">
-            <div class="card shadow p-4">
-                <h2 class="text-danger mb-4">Formulario de Producto</h2>
+        <div class="container py-5" style="max-width: 700px;">
+            <div class="d-flex align-items-center mb-4 gap-2">
+                <a th:href="@{/producto/listado}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+                <h2 class="fw-bold mb-0 ms-2">
+                    <span th:if="${producto.id == null}">Nuevo Producto</span>
+                    <span th:if="${producto.id != null}">Editar Producto</span>
+                </h2>
+            </div>
 
-                <form th:action="@{/producto/guardar}" th:object="${producto}" method="post">
+            <div class="card card-form shadow-sm p-4">
+
+                <!-- Formulario: enctype multipart para subir archivos -->
+                <form th:action="@{/producto/guardar}"
+                      th:object="${producto}"
+                      method="post"
+                      enctype="multipart/form-data">
+
                     <input type="hidden" th:field="*{id}">
 
-                    <div class="mb-3">
-                        <label class="form-label">Nombre</label>
-                        <input type="text" class="form-control" th:field="*{nombre}" required>
+                    <div class="row g-4">
+
+                        <!-- Columna izquierda: datos del producto -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Nombre <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" th:field="*{nombre}" placeholder="Ej: Combo Alitas Pro" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Descripción <span class="text-danger">*</span></label>
+                                <textarea class="form-control" th:field="*{descripcion}" rows="3"
+                                          placeholder="Descripción breve del producto" required></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Precio (₡) <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₡</span>
+                                    <input type="number" step="0.01" min="0" class="form-control"
+                                           th:field="*{precio}" placeholder="0.00" required>
+                                </div>
+                            </div>
+
+                            <!-- URL manual (opcional, se usa si no sube archivo) -->
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-muted small">
+                                    <i class="bi bi-link-45deg"></i> URL de imagen alternativa
+                                    <span class="badge bg-secondary ms-1">Opcional</span>
+                                </label>
+                                <input type="text" class="form-control form-control-sm"
+                                       th:field="*{imagenUrl}" placeholder="https://... (si no sube archivo)">
+                                <div class="form-text">Se ignora si seleccionás un archivo arriba.</div>
+                            </div>
+                        </div>
+
+                        <!-- Columna derecha: imagen -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Imagen del Producto</label>
+
+                            <!-- Preview: si hay imagenUrl existente, la muestra -->
+                            <div class="mb-3 text-center" id="previewContainer">
+                                <img th:if="${producto.imagenUrl != null and !#strings.isEmpty(producto.imagenUrl)}"
+                                     th:src="${producto.imagenUrl}"
+                                     id="previewImg"
+                                     class="preview-img"
+                                     alt="Vista previa actual">
+                                <div th:if="${producto.imagenUrl == null or #strings.isEmpty(producto.imagenUrl)}"
+                                     id="previewPlaceholder"
+                                     class="preview-img flex-column text-muted">
+                                    <i class="bi bi-image fs-1"></i>
+                                    <span class="small mt-2">Sin imagen</span>
+                                </div>
+                            </div>
+
+                            <!-- Zona de carga -->
+                            <div class="upload-zone" onclick="document.getElementById('imagenFile').click()">
+                                <i class="bi bi-cloud-arrow-up-fill text-success fs-3"></i>
+                                <p class="mb-0 mt-2 fw-semibold text-success">Subir imagen desde tu equipo</p>
+                                <p class="mb-0 small text-muted">JPG, PNG, WEBP — máx. 5 MB</p>
+                            </div>
+
+                            <!-- Input oculto -->
+                            <input type="file" id="imagenFile" name="imagenFile"
+                                   accept="image/jpeg,image/png,image/webp"
+                                   onchange="mostrarPreview(event)">
+
+                            <!-- Nombre del archivo seleccionado -->
+                            <div id="nombreArchivo" class="small text-muted mt-2 text-center"></div>
+
+                            <div class="alert alert-info mt-3 small py-2">
+                                <i class="bi bi-info-circle-fill"></i>
+                                La imagen se sube automáticamente a <strong>Firebase Storage</strong> al guardar.
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Descripción</label>
-                        <input type="text" class="form-control" th:field="*{descripcion}" required>
-                    </div>
+                    <hr class="my-4">
 
-                    <div class="mb-3">
-                        <label class="form-label">Precio</label>
-                        <input type="number" step="0.01" class="form-control" th:field="*{precio}" required>
+                    <div class="d-flex justify-content-end gap-2">
+                        <a th:href="@{/producto/listado}" class="btn btn-outline-secondary px-4">Cancelar</a>
+                        <button type="submit" class="btn btn-success px-5 fw-bold">
+                            <i class="bi bi-floppy-fill me-1"></i> Guardar Producto
+                        </button>
                     </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Imagen URL</label>
-                        <input type="text" class="form-control" th:field="*{imagenUrl}">
-                    </div>
-
-                    <button type="submit" class="btn btn-success">Guardar</button>
-                    <a th:href="@{/producto/listado}" class="btn btn-secondary">Cancelar</a>
                 </form>
             </div>
         </div>
 
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+                                       function mostrarPreview(event) {
+                                           const archivo = event.target.files[0];
+                                           if (!archivo)
+                                               return;
+
+                                           // Valida tamaño (5 MB)
+                                           if (archivo.size > 5 * 1024 * 1024) {
+                                               alert('La imagen supera los 5 MB. Por favor elegí una más pequeña.');
+                                               event.target.value = '';
+                                               return;
+                                           }
+
+                                           const reader = new FileReader();
+                                           reader.onload = function (e) {
+                                               // Muestra la imagen seleccionada como preview
+                                               let img = document.getElementById('previewImg');
+                                               const placeholder = document.getElementById('previewPlaceholder');
+
+                                               if (!img) {
+                                                   img = document.createElement('img');
+                                                   img.id = 'previewImg';
+                                                   img.className = 'preview-img';
+                                                   img.alt = 'Vista previa';
+                                                   document.getElementById('previewContainer').innerHTML = '';
+                                                   document.getElementById('previewContainer').appendChild(img);
+                                               }
+                                               if (placeholder)
+                                                   placeholder.style.display = 'none';
+                                               img.src = e.target.result;
+                                           };
+                                           reader.readAsDataURL(archivo);
+
+                                           document.getElementById('nombreArchivo').textContent =
+                                                   '📎 ' + archivo.name + ' (' + (archivo.size / 1024).toFixed(1) + ' KB)';
+                                       }
+        </script>
     </body>
 </html>
