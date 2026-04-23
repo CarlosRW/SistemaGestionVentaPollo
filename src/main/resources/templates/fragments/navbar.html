@@ -1,78 +1,77 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<body>
+    <body>
+        <nav th:fragment="navbar" class="navbar navbar-expand-lg shadow-sm"
+             style="background: linear-gradient(90deg,#1a1a1a 70%,#14532d 100%);">
+            <div class="container-fluid px-4">
 
-<!-- Navbar reutilizable: usar con th:replace="fragments/navbar :: navbar" -->
-<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark"
-     style="background-color: #1a1a1a;">
-    <div class="container-fluid px-4">
+                <a class="navbar-brand fw-bold d-flex align-items-center gap-2" th:href="@{/producto/listado}">
+                    <span style="background:#00a63c;color:white;padding:3px 10px;border-radius:6px;font-size:20px;">🍗</span>
+                    <span style="color:#4ade80;">Pollos</span><span style="color:white;">&nbsp;Hermanos</span>
+                </a>
 
-        <!-- Logo / Marca -->
-        <a class="navbar-brand fw-bold d-flex align-items-center gap-2" th:href="@{/producto/listado}">
-            <span style="background:#00a63c;color:white;padding:3px 8px;border-radius:4px;font-size:18px;">🍗</span>
-            <span style="color:#17a34a;">Pollos</span>&nbsp;Hermanos
-        </a>
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarMain">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarMain">
-            <!-- Links del centro -->
-            <ul class="navbar-nav me-auto ms-3 gap-1">
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/producto/listado}">
-                        🍗 Menú
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/carrito/listado}">
-                        🛒 Mi Carrito
-                    </a>
-                </li>
-            </ul>
-
-            <!-- Usuario logueado (derecha) -->
-            <ul class="navbar-nav ms-auto align-items-center gap-2">
-                <li class="nav-item dropdown" th:if="${session.usuarioLogueado != null}">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
-                       href="#" role="button" data-bs-toggle="dropdown">
-
-                        <!-- Foto de perfil o avatar por defecto -->
-                        <img th:if="${session.usuarioLogueado.fotoPerfilUrl != null and !#strings.isEmpty(session.usuarioLogueado.fotoPerfilUrl)}"
-                             th:src="${session.usuarioLogueado.fotoPerfilUrl}"
-                             alt="Foto de perfil"
-                             style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #198754;">
-
-                        <span th:if="${session.usuarioLogueado.fotoPerfilUrl == null or #strings.isEmpty(session.usuarioLogueado.fotoPerfilUrl)}"
-                              style="width:34px;height:34px;border-radius:50%;background:#198754;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;color:white;font-size:14px;"
-                              th:text="${#strings.toUpperCase(#strings.substring(session.usuarioLogueado.nombre,0,1))}">
-                        </span>
-
-                        <span class="text-white" th:text="${session.usuarioLogueado.nombre}">Usuario</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li>
-                            <span class="dropdown-item-text text-muted small"
-                                  th:text="${session.usuarioLogueado.correo}">correo</span>
+                <div class="collapse navbar-collapse" id="navMain">
+                    <ul class="navbar-nav me-auto ms-3 gap-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" th:href="@{/producto/listado}">🍗 Menú</a>
                         </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li>
-                            <a class="dropdown-item text-danger" th:href="@{/usuario/logout}">
-                                🚪 Cerrar sesión
-                            </a>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" th:href="@{/carrito/listado}">🛒 Mi Carrito</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" th:href="@{/factura/mis-pedidos}">📋 Mis Pedidos</a>
+                        </li>
+                        <!-- Solo ADMIN ve el panel -->
+                        <li class="nav-item"
+                            th:if="${session.usuarioLogueado != null and session.usuarioLogueado.esAdmin()}">
+                            <a class="nav-link text-warning fw-bold" th:href="@{/admin/panel}">⚙️ Panel Admin</a>
                         </li>
                     </ul>
-                </li>
 
-                <li class="nav-item" th:if="${session.usuarioLogueado == null}">
-                    <a class="btn btn-outline-light btn-sm" th:href="@{/usuario/login}">Iniciar sesión</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+                    <ul class="navbar-nav ms-auto align-items-center gap-2">
+                        <li class="nav-item dropdown" th:if="${session.usuarioLogueado != null}">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2"
+                               href="#" role="button" data-bs-toggle="dropdown">
 
-</body>
+                                <img th:if="${session.usuarioLogueado.fotoPerfilUrl != null and !#strings.isEmpty(session.usuarioLogueado.fotoPerfilUrl)}"
+                                     th:src="${session.usuarioLogueado.fotoPerfilUrl}"
+                                     style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #4ade80;" alt="">
+
+                                <span th:if="${session.usuarioLogueado.fotoPerfilUrl == null or #strings.isEmpty(session.usuarioLogueado.fotoPerfilUrl)}"
+                                      style="width:34px;height:34px;border-radius:50%;background:#16a34a;color:white;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;font-size:15px;"
+                                      th:text="${#strings.toUpperCase(#strings.substring(session.usuarioLogueado.nombre,0,1))}"></span>
+
+                                <span class="text-white" th:text="${session.usuarioLogueado.nombre}"></span>
+                                <!-- Badge de rol -->
+                                <span th:if="${session.usuarioLogueado.esAdmin()}"
+                                      class="badge" style="background:#f59e0b;font-size:10px;">ADMIN</span>
+                                <span th:if="${session.usuarioLogueado.esCliente()}"
+                                      class="badge" style="background:#3b82f6;font-size:10px;">CLIENTE</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><span class="dropdown-item-text text-muted small"
+                                          th:text="${session.usuarioLogueado.correo}"></span></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" th:href="@{/factura/mis-pedidos}">📋 Mis Pedidos</a></li>
+                                <li th:if="${session.usuarioLogueado.esAdmin()}">
+                                    <a class="dropdown-item text-warning" th:href="@{/admin/panel}">⚙️ Panel Admin</a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" th:href="@{/usuario/logout}">🚪 Cerrar sesión</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item" th:if="${session.usuarioLogueado == null}">
+                            <a class="btn btn-outline-light btn-sm me-1" th:href="@{/usuario/login}">Iniciar sesión</a>
+                            <a class="btn btn-success btn-sm" th:href="@{/usuario/registro}">Registrarse</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </body>
 </html>

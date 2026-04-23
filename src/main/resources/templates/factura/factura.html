@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Factura #<span th:text="${pedido.id}"></span> | Pollos Hermanos</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+        <style>
+            body {
+                background:#f3f4f6;
+            }
+            @media print {
+                body {
+                    background:white !important;
+                }
+                .no-print {
+                    display:none !important;
+                }
+                .factura-card {
+                    box-shadow:none !important;
+                    border:1px solid #ddd !important;
+                }
+            }
+            .factura-card {
+                border:none;
+                border-radius:20px;
+                max-width:750px;
+                margin:auto;
+            }
+            .logo-header {
+                background: linear-gradient(135deg,#14532d,#166534);
+                border-radius:16px 16px 0 0;
+                padding:28px 36px;
+                color:white;
+            }
+            .table-factura th {
+                background:#f0fdf4;
+                color:#14532d;
+                font-size:13px;
+            }
+            .firma-line {
+                border-top:2px solid #14532d;
+                width:200px;
+                margin:auto;
+            }
+            .badge-estado {
+                font-size:13px;
+                padding:6px 16px;
+                border-radius:20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div th:replace="~{fragments/navbar :: navbar}" class="no-print"></div>
+
+        <div class="container py-4">
+
+            <!-- Acciones (no se imprimen) -->
+            <div class="d-flex justify-content-between align-items-center mb-3 no-print" style="max-width:750px;margin:auto;">
+                <a th:href="@{/producto/listado}" class="btn btn-outline-success">
+                    <i class="bi bi-arrow-left me-1"></i> Seguir comprando
+                </a>
+                <div class="d-flex gap-2">
+                    <a th:href="@{/factura/mis-pedidos}" class="btn btn-outline-primary">
+                        <i class="bi bi-list-check me-1"></i> Mis Pedidos
+                    </a>
+                    <button onclick="window.print()" class="btn btn-success fw-bold">
+                        <i class="bi bi-download me-1"></i> Descargar / Imprimir Factura
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tarjeta de factura -->
+            <div class="card factura-card shadow-lg">
+
+                <!-- Encabezado -->
+                <div class="logo-header">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="d-flex align-items-center gap-3 mb-2">
+                                <span style="font-size:2.5rem;">🍗</span>
+                                <div>
+                                    <h2 class="fw-bold mb-0">Pollos Hermanos</h2>
+                                    <p class="mb-0 opacity-75 small">Sabor que enamora desde siempre</p>
+                                </div>
+                            </div>
+                            <p class="mb-0 small opacity-75">correo@polloshermanos.cr &nbsp;|&nbsp; Tel: 2222-2222</p>
+                        </div>
+                        <div class="text-end">
+                            <div class="badge bg-white text-success badge-estado fw-bold mb-2"
+                                 th:text="${pedido.estado}">CONFIRMADO</div>
+                            <h4 class="fw-bold mb-1">FACTURA</h4>
+                            <p class="mb-0 opacity-75"># <span th:text="${pedido.id}"></span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body px-4 py-4">
+
+                    <!-- Datos del cliente y pedido -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted fw-semibold mb-2">FACTURADO A</h6>
+                            <p class="mb-1 fw-bold fs-5" th:text="${cliente != null ? cliente.nombre : 'Cliente'}"></p>
+                            <p class="mb-1 text-muted small" th:text="${cliente != null ? cliente.correo : ''}"></p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <h6 class="text-muted fw-semibold mb-2">DETALLES DEL PEDIDO</h6>
+                            <p class="mb-1 small">
+                                <span class="fw-semibold">Fecha:</span>
+                                <span th:text="${#dates.format(pedido.fechaPedido, 'dd/MM/yyyy HH:mm')}">--</span>
+                            </p>
+                            <p class="mb-1 small">
+                                <span class="fw-semibold">N.° Pedido:</span>
+                                <span th:text="${pedido.id}"></span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de productos -->
+                    <div class="table-responsive mb-4">
+                        <table class="table table-factura align-middle">
+                            <thead>
+                                <tr>
+                                    <th style="width:45%">Producto</th>
+                                    <th class="text-center">Cantidad</th>
+                                    <th class="text-end">Precio Unit.</th>
+                                    <th class="text-end">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="det : ${detalles}">
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <img th:src="${det.producto.imagenUrl != null and !#strings.isEmpty(det.producto.imagenUrl)} ? ${det.producto.imagenUrl} : 'https://placehold.co/50x50?text=🍗'"
+                                                 style="width:48px;height:48px;border-radius:10px;object-fit:cover;" alt="">
+                                            <div>
+                                                <div class="fw-semibold" th:text="${det.producto.nombre}"></div>
+                                                <div class="text-muted small" th:text="${det.producto.descripcion}"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-dark px-3 py-2" th:text="${det.cantidad}"></span>
+                                    </td>
+                                    <td class="text-end fw-semibold">
+                                        ₡<span th:text="${#numbers.formatInteger(det.producto.precio, 0, 'COMMA')}"></span>
+                                    </td>
+                                    <td class="text-end fw-bold text-success">
+                                        ₡<span th:text="${#numbers.formatInteger(det.subtotal, 0, 'COMMA')}"></span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Totales -->
+                    <div class="row justify-content-end">
+                        <div class="col-md-5">
+                            <div class="card border-0" style="background:#f0fdf4;border-radius:14px;">
+                                <div class="card-body p-3">
+                                    <div class="d-flex justify-content-between mb-2 text-muted">
+                                        <span>Subtotal</span>
+                                        <span>₡<span th:text="${#numbers.formatInteger(subtotal, 0, 'COMMA')}"></span></span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2 text-danger">
+                                        <span>IVA (13%)</span>
+                                        <span>₡<span th:text="${#numbers.formatInteger(iva, 0, 'COMMA')}"></span></span>
+                                    </div>
+                                    <hr class="my-2">
+                                    <div class="d-flex justify-content-between fw-bold fs-5">
+                                        <span>TOTAL</span>
+                                        <span class="text-success">₡<span th:text="${#numbers.formatInteger(pedido.total, 0, 'COMMA')}"></span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pie de factura -->
+                    <div class="text-center mt-5 pt-4 border-top">
+                        <p class="text-muted small mb-1">
+                            🍗 Gracias por elegirnos. ¡Que disfrutes tu pollo!
+                        </p>
+                        <p class="text-muted small mb-4">
+                            Esta factura es válida como comprobante de compra.
+                        </p>
+                        <div class="firma-line mb-2"></div>
+                        <p class="small fw-semibold" style="color:#14532d;">Pollos Hermanos S.A.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>

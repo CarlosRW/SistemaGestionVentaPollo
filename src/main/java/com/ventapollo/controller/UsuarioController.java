@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/usuario")
@@ -41,7 +40,7 @@ public class UsuarioController {
         }
 
         try {
-            usuarioService.guardar(usuario, fotoFile);
+            usuarioService.registrar(usuario, fotoFile); // siempre rol CLIENTE
             model.addAttribute("mensaje", "¡Registro exitoso! Ya podés iniciar sesión.");
         } catch (Exception e) {
             model.addAttribute("error", "Error al registrar: " + e.getMessage());
@@ -61,8 +60,11 @@ public class UsuarioController {
         Usuario usuario = usuarioService.autenticar(correo, password);
 
         if (usuario != null) {
-            // Guarda el usuario en sesión para usarlo en toda la app
             session.setAttribute("usuarioLogueado", usuario);
+            // Admin va al panel, cliente al menú
+            if (usuario.esAdmin()) {
+                return "redirect:/admin/panel";
+            }
             return "redirect:/producto/listado";
         } else {
             model.addAttribute("error", "Correo o contraseña incorrectos.");
@@ -73,6 +75,6 @@ public class UsuarioController {
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
-        return "redirect:/usuario/login";
+        return "redirect:/";
     }
 }

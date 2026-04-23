@@ -8,6 +8,6 @@ public class InicioController {
 
     @GetMapping("/")
     public String inicio() {
-        return "usuario/login";
+        return "landing";   // landing page pública
     }
 }

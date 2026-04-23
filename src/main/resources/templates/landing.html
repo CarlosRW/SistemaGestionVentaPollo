@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Pollos Hermanos | El mejor pollo de Costa Rica</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --verde: #14532d;
+                --verde-claro: #16a34a;
+                --dorado: #d97706;
+            }
+            * {
+                font-family: 'Poppins', sans-serif;
+            }
+            body {
+                margin: 0;
+                overflow-x: hidden;
+            }
+
+            /* ── HERO ── */
+            .hero {
+                min-height: 100vh;
+                background:
+                    linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55)),
+                    url('https://images.unsplash.com/photo-1626700051175-6818013e1d4f?q=80&w=1920&auto=format&fit=crop')
+                    center/cover no-repeat;
+                display: flex;
+                flex-direction: column;
+            }
+            .hero-nav {
+                padding: 20px 48px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .logo-text {
+                font-size: 1.5rem;
+                font-weight: 800;
+                color: white;
+                text-decoration: none;
+            }
+            .logo-text span {
+                color: #4ade80;
+            }
+            .hero-body {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding: 40px 20px;
+            }
+            .hero-badge {
+                display: inline-block;
+                background: rgba(74,222,128,.15);
+                border: 1px solid #4ade80;
+                color: #4ade80;
+                border-radius: 40px;
+                padding: 6px 22px;
+                font-size: 13px;
+                font-weight: 600;
+                margin-bottom: 20px;
+                letter-spacing: .5px;
+            }
+            .hero h1 {
+                font-size: clamp(2.8rem, 7vw, 5.5rem);
+                font-weight: 900;
+                color: white;
+                line-height: 1.1;
+                margin-bottom: 20px;
+            }
+            .hero h1 .highlight {
+                color: #4ade80;
+                display: block;
+            }
+            .hero p {
+                font-size: 1.15rem;
+                color: rgba(255,255,255,.8);
+                max-width: 540px;
+                margin: 0 auto 36px;
+            }
+            .btn-hero-primary {
+                background: linear-gradient(135deg, #16a34a, #15803d);
+                color: white;
+                font-weight: 700;
+                font-size: 1.05rem;
+                padding: 14px 38px;
+                border-radius: 50px;
+                border: none;
+                text-decoration: none;
+                box-shadow: 0 8px 24px rgba(22,163,74,.4);
+                transition: .2s;
+            }
+            .btn-hero-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 32px rgba(22,163,74,.55);
+                color: white;
+            }
+            .btn-hero-outline {
+                color: white;
+                border: 2px solid rgba(255,255,255,.5);
+                font-weight: 600;
+                padding: 13px 30px;
+                border-radius: 50px;
+                text-decoration: none;
+                transition: .2s;
+            }
+            .btn-hero-outline:hover {
+                background: rgba(255,255,255,.1);
+                border-color: white;
+                color: white;
+            }
+            /* Scroll indicator */
+            .scroll-down {
+                text-align: center;
+                padding-bottom: 30px;
+                color: rgba(255,255,255,.5);
+                animation: bounce 2s infinite;
+            }
+            @keyframes bounce {
+                0%,100%{
+                    transform:translateY(0)
+                }
+                50%{
+                    transform:translateY(-8px)
+                }
+            }
+
+            /* ── STATS ── */
+            .stats {
+                background: #14532d;
+            }
+            .stat-item {
+                text-align: center;
+                padding: 28px 0;
+            }
+            .stat-item .num {
+                font-size: 2.5rem;
+                font-weight: 900;
+                color: #4ade80;
+            }
+            .stat-item .lbl {
+                font-size: .9rem;
+                color: rgba(255,255,255,.7);
+                font-weight: 500;
+            }
+
+            /* ── FEATURES ── */
+            .section-title {
+                font-size: 2.2rem;
+                font-weight: 800;
+                color: var(--verde);
+                margin-bottom: 8px;
+            }
+            .feature-card {
+                border: none;
+                border-radius: 20px;
+                padding: 32px 24px;
+                text-align: center;
+                transition: .25s;
+                cursor: default;
+            }
+            .feature-card:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 16px 36px rgba(0,0,0,.1) !important;
+            }
+            .feature-icon {
+                font-size: 3rem;
+                margin-bottom: 16px;
+            }
+
+            /* ── MENU PREVIEW ── */
+            .menu-card {
+                border: none;
+                border-radius: 18px;
+                overflow: hidden;
+                transition: .25s;
+            }
+            .menu-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 14px 32px rgba(0,0,0,.13) !important;
+            }
+            .menu-card img {
+                height: 200px;
+                object-fit: cover;
+            }
+            .menu-card .price {
+                color: var(--verde-claro);
+                font-weight: 800;
+                font-size: 1.25rem;
+            }
+
+            /* ── SUCURSALES ── */
+            .branch-card {
+                border: none;
+                border-radius: 16px;
+                border-left: 5px solid var(--verde-claro) !important;
+            }
+
+            /* ── CTA ── */
+            .cta-section {
+                background: linear-gradient(135deg, #14532d, #166534);
+                color: white;
+                padding: 80px 20px;
+                text-align: center;
+            }
+            .cta-section h2 {
+                font-size: 2.5rem;
+                font-weight: 900;
+                margin-bottom: 16px;
+            }
+            .cta-section p {
+                font-size: 1.1rem;
+                opacity: .85;
+                margin-bottom: 36px;
+            }
+
+            /* ── FOOTER ── */
+            footer {
+                background: #0f0f0f;
+                color: rgba(255,255,255,.6);
+            }
+            footer .logo {
+                color: #4ade80;
+                font-weight: 800;
+                font-size: 1.3rem;
+            }
+        </style>
+    </head>
+    <body>
+
+        <!-- ═══════════════ HERO ═══════════════ -->
+        <section class="hero">
+            <nav class="hero-nav">
+                <a href="/" class="logo-text">🍗 <span>Pollos</span> Hermanos</a>
+                <div class="d-flex gap-2 flex-wrap justify-content-end">
+                    <a th:href="@{/usuario/login}" class="btn-hero-outline" style="font-size:.9rem;padding:9px 22px;">
+                        Iniciar sesión
+                    </a>
+                    <a th:href="@{/usuario/registro}" class="btn-hero-primary" style="font-size:.9rem;padding:10px 22px;">
+                        Registrarse gratis
+                    </a>
+                </div>
+            </nav>
+
+            <div class="hero-body">
+                <div class="hero-badge">🏆 #1 en pollo frito de Costa Rica</div>
+                <h1>
+                    El pollo más
+                    <span class="highlight">crujiente</span>
+                    que probaste
+                </h1>
+                <p>
+                    Combos, alitas, piezas sueltas y acompañamientos.
+                    Pedí en línea, retirá en tu sucursal más cercana.
+                </p>
+                <div class="d-flex gap-3 flex-wrap justify-content-center">
+                    <a th:href="@{/usuario/registro}" class="btn-hero-primary">
+                        🍗 Hacer mi pedido
+                    </a>
+                    <a th:href="@{/usuario/login}" class="btn-hero-outline">
+                        Ya tengo cuenta →
+                    </a>
+                </div>
+            </div>
+
+            <div class="scroll-down">
+                <i class="bi bi-chevron-double-down fs-4"></i>
+            </div>
+        </section>
+
+        <!-- ═══════════════ ESTADÍSTICAS ═══════════════ -->
+        <section class="stats">
+            <div class="container">
+                <div class="row g-0">
+                    <div class="col-6 col-md-3">
+                        <div class="stat-item">
+                            <div class="num">+12K</div>
+                            <div class="lbl">Clientes felices</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-item">
+                            <div class="num">4</div>
+                            <div class="lbl">Sucursales en CR</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-item">
+                            <div class="num">9+</div>
+                            <div class="lbl">Productos en menú</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-item">
+                            <div class="num">15 años</div>
+                            <div class="lbl">Dando sabor</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════ ¿POR QUÉ NOSOTROS? ═══════════════ -->
+        <section class="py-5" style="background:#f8faf8;">
+            <div class="container py-3">
+                <div class="text-center mb-5">
+                    <p class="text-success fw-semibold mb-1">¿Por qué elegirnos?</p>
+                    <h2 class="section-title">La experiencia Pollos Hermanos</h2>
+                    <p class="text-muted mx-auto" style="max-width:500px;">
+                        Desde el campo hasta tu bandeja, cuidamos cada detalle para darte lo mejor.
+                    </p>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="feature-card shadow-sm bg-white h-100">
+                            <div class="feature-icon">🌿</div>
+                            <h5 class="fw-bold mb-2">100% Natural</h5>
+                            <p class="text-muted">Pollo de granja sin hormonas ni aditivos. Sabor puro garantizado.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card shadow-sm bg-white h-100">
+                            <div class="feature-icon">⚡</div>
+                            <h5 class="fw-bold mb-2">Pedido Express</h5>
+                            <p class="text-muted">Hacé tu pedido en línea y retiralo listo en tu sucursal en minutos.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card shadow-sm bg-white h-100">
+                            <div class="feature-icon">💳</div>
+                            <h5 class="fw-bold mb-2">Múltiples Pagos</h5>
+                            <p class="text-muted">Efectivo, SINPE Móvil o tarjeta. Elegís vos al confirmar el pedido.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card shadow-sm bg-white h-100">
+                            <div class="feature-icon">🧾</div>
+                            <h5 class="fw-bold mb-2">Factura Digital</h5>
+                            <p class="text-muted">Descargá tu factura al instante y revisá tu historial cuando quieras.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card shadow-sm bg-white h-100">
+                            <div class="feature-icon">🔒</div>
+                            <h5 class="fw-bold mb-2">Cuenta Segura</h5>
+                            <p class="text-muted">Tu perfil personal con foto. Solo vos ves tus pedidos.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card shadow-sm bg-white h-100">
+                            <div class="feature-icon">📍</div>
+                            <h5 class="fw-bold mb-2">4 Sucursales</h5>
+                            <p class="text-muted">San José, Alajuela, Heredia y Cartago. Siempre cerca de vos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════ MUESTRA DEL MENÚ ═══════════════ -->
+        <section class="py-5 bg-white">
+            <div class="container py-3">
+                <div class="text-center mb-5">
+                    <p class="text-success fw-semibold mb-1">Nuestros favoritos</p>
+                    <h2 class="section-title">Lo más pedido</h2>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="card menu-card shadow-sm">
+                            <img src="https://images.unsplash.com/photo-1608039755401-742074f0548d?q=80&w=600&auto=format" alt="Combo Alitas Pro">
+                            <div class="card-body">
+                                <h5 class="fw-bold">Combo Alitas Pro</h5>
+                                <p class="text-muted small">10 alitas picantes, papas grandes y refresco</p>
+                                <div class="price">₡4,500</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card menu-card shadow-sm">
+                            <img src="https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?q=80&w=600&auto=format" alt="Cubo Familiar">
+                            <div class="card-body">
+                                <h5 class="fw-bold">Cubo Familiar</h5>
+                                <p class="text-muted small">12 piezas de pollo frito crujiente + acompañamiento</p>
+                                <div class="price">₡9,500</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card menu-card shadow-sm">
+                            <img src="https://images.unsplash.com/photo-1513639776629-7b61b0ac49cb?q=80&w=600&auto=format" alt="Pollo Entero">
+                            <div class="card-body">
+                                <h5 class="fw-bold">Pollo Entero Crujiente</h5>
+                                <p class="text-muted small">8 piezas de pollo frito tradicional</p>
+                                <div class="price">₡8,900</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <a th:href="@{/usuario/registro}" class="btn btn-success btn-lg px-5 fw-bold rounded-pill">
+                        Ver menú completo →
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════ SUCURSALES ═══════════════ -->
+        <section class="py-5" style="background:#f0fdf4;">
+            <div class="container py-3">
+                <div class="text-center mb-5">
+                    <p class="text-success fw-semibold mb-1">Dónde encontrarnos</p>
+                    <h2 class="section-title">Nuestras Sucursales</h2>
+                </div>
+                <div class="row g-4 justify-content-center">
+                    <div class="col-md-5 col-lg-3">
+                        <div class="card branch-card shadow-sm p-4 h-100">
+                            <div class="fs-2 mb-2">📍</div>
+                            <h5 class="fw-bold">Sede Central</h5>
+                            <p class="text-muted mb-1 small">San José · Centro</p>
+                            <p class="text-success small fw-semibold">Lun–Dom 10am–10pm</p>
+                        </div>
+                    </div>
+                    <div class="col-md-5 col-lg-3">
+                        <div class="card branch-card shadow-sm p-4 h-100">
+                            <div class="fs-2 mb-2">📍</div>
+                            <h5 class="fw-bold">Alajuela</h5>
+                            <p class="text-muted mb-1 small">Cerca de la Universidad</p>
+                            <p class="text-success small fw-semibold">Lun–Dom 10am–9pm</p>
+                        </div>
+                    </div>
+                    <div class="col-md-5 col-lg-3">
+                        <div class="card branch-card shadow-sm p-4 h-100">
+                            <div class="fs-2 mb-2">📍</div>
+                            <h5 class="fw-bold">Heredia</h5>
+                            <p class="text-muted mb-1 small">Parque Central</p>
+                            <p class="text-success small fw-semibold">Lun–Dom 11am–9pm</p>
+                        </div>
+                    </div>
+                    <div class="col-md-5 col-lg-3">
+                        <div class="card branch-card shadow-sm p-4 h-100">
+                            <div class="fs-2 mb-2">📍</div>
+                            <h5 class="fw-bold">Cartago</h5>
+                            <p class="text-muted mb-1 small">Zona Centro</p>
+                            <p class="text-success small fw-semibold">Lun–Dom 10am–9pm</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════ CTA ═══════════════ -->
+        <section class="cta-section">
+            <div class="container">
+                <div style="font-size:3.5rem; margin-bottom:16px;">🍗</div>
+                <h2>¿Listo para el mejor pollo de tu vida?</h2>
+                <p>Creá tu cuenta gratis y hacé tu primer pedido ahora mismo.</p>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a th:href="@{/usuario/registro}"
+                       style="background:white;color:#14532d;font-weight:800;font-size:1.1rem;padding:16px 44px;border-radius:50px;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.2);transition:.2s;">
+                        🚀 Crear cuenta gratis
+                    </a>
+                    <a th:href="@{/usuario/login}"
+                       style="border:2px solid rgba(255,255,255,.5);color:white;font-weight:600;font-size:1rem;padding:15px 36px;border-radius:50px;text-decoration:none;transition:.2s;">
+                        Iniciar sesión →
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════ FOOTER ═══════════════ -->
+        <footer class="py-4">
+            <div class="container text-center">
+                <p class="logo mb-1">🍗 Pollos Hermanos</p>
+                <p class="small mb-0">© 2025 Pollos Hermanos S.A. · Todos los derechos reservados</p>
+                <p class="small mt-1">
+                    <a th:href="@{/usuario/login}" class="text-success text-decoration-none me-3">Iniciar sesión</a>
+                    <a th:href="@{/usuario/registro}" class="text-success text-decoration-none">Registrarse</a>
+                </p>
+            </div>
+        </footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
