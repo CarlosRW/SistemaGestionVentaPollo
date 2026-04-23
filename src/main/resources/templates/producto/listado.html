@@ -84,8 +84,12 @@
             <div class="row g-4">
                 <div class="col-sm-6 col-md-4 col-lg-3" th:each="p : ${productos}">
                     <div class="card card-producto shadow-sm h-100">
+
+                        <!-- ✅ CORRECCIÓN:para URLs rotas -->
                         <img th:src="${p.imagenUrl != null and !#strings.isEmpty(p.imagenUrl)} ? ${p.imagenUrl} : 'https://placehold.co/400x185?text=Sin+imagen'"
-                             alt="Imagen del producto">
+                             alt="Imagen del producto"
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x185?text=Sin+imagen';">
+
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title fw-bold mb-1" th:text="${p.nombre}"></h5>
                             <p class="card-text text-muted small flex-grow-1" th:text="${p.descripcion}"></p>

@@ -33,7 +33,9 @@ public class FirebaseConfig {
 
             // Si no está en classpath, intenta como ruta absoluta
             if (credenciales == null) {
-                credenciales = new FileInputStream("src/main/resources/" + jsonPath + "/" + jsonFile);
+                throw new IllegalStateException(
+                    "No se encontró el archivo de credenciales Firebase en classpath: " 
+                    + jsonPath + "/" + jsonFile);
             }
 
             FirebaseOptions options = FirebaseOptions.builder()
@@ -44,5 +46,5 @@ public class FirebaseConfig {
             FirebaseApp.initializeApp(options);
             System.out.println("✅ Firebase inicializado correctamente. Bucket: " + bucketName);
         }
-    }
+}
 }
